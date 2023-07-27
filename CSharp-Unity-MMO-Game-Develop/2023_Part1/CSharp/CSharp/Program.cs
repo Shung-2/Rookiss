@@ -11,6 +11,7 @@ namespace CSharp
         static void Main(string[] args)
         {
             int hp = 100;
+            hp = hp - 10;
 
             Console.WriteLine(hp);
         }

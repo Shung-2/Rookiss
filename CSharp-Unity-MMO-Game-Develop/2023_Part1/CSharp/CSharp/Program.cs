@@ -13,6 +13,8 @@ namespace CSharp
             int hp = 100;
             hp = hp - 10;
 
+            object obj = 3;
+
             Console.WriteLine(hp);
         }
     }

@@ -59,7 +59,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     float _speed = 10.0f;
 
-    bool _moveToDest = false;
     Vector3 _destPos;
 
     void Start()
@@ -78,19 +77,64 @@ public class PlayerController : MonoBehaviour
         // 2. 실제 방향     // 우측
         #endregion
 
-        Managers.Input.KeyAction -= OnKeyboard; // 중복 등록 방지
-        Managers.Input.KeyAction += OnKeyboard; // 키보드 입력을 구독 받는다.
+        // Managers.Input.KeyAction -= OnKeyboard; // 중복 등록 방지
+        // Managers.Input.KeyAction += OnKeyboard; // 키보드 입력을 구독 받는다.
 
         Managers.Input.MouseAction -= OnMouseClicked; // 중복 등록 방지
         Managers.Input.MouseAction += OnMouseClicked; // 마우스 입력을 구독 받는다.
     }
 
+    public enum PlayerState
+    {
+        Die,
+        Moving,
+        Idle,
+    }
+
+    PlayerState _state = PlayerState.Idle;
+
+    void UpdateDie()
+    {
+        // 현재는 아무것도 하지 않는다.
+    }
+
+    void UpdateMoving()
+    {
+        // 방향 벡터를 구한다.
+        Vector3 dir = _destPos - transform.position;
+
+        // 도착한 상태
+        if (dir.magnitude < 0.0001f)
+        {
+            _state = PlayerState.Idle;
+        }
+        else
+        {
+            float moveDist = Mathf.Clamp(_speed * Time.deltaTime, 0, dir.magnitude);
+            transform.position += dir.normalized * moveDist;
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 10.0f);
+        }
+
+        // 애니메이션 처리
+        Animator anim = GetComponent<Animator>();
+        // 현재 게임 상태에 대한 정보를 넘겨준다.
+        anim.SetFloat("speed", _speed);
+    }
+    void UpdateIdle()
+    {
+        // 애니메이션 처리
+        Animator anim = GetComponent<Animator>();
+        anim.SetFloat("speed", 0);
+    }
+
     void Update()
     {
+        #region 로컬 > 월드, 월드 > 로컬 전환시 사용하는 함수 목록
         // Local > World
         // TransforDirection()
         // World > Local
         // InverseTransformDirection()
+        #endregion
 
         #region 회전 예제
         // 절대 회전값
@@ -101,57 +145,52 @@ public class PlayerController : MonoBehaviour
         // transform.rotation = Quaternion.Euler(0.0f, _rotY, 0.0f);
         #endregion
 
-        if (_moveToDest)
+        switch (_state)
         {
-            // 방향 벡터를 구한다.
-            Vector3 dir = _destPos - transform.position;
-            
-            // 도착한 상태
-            if (dir.magnitude < 0.0001f)
-            {
-                _moveToDest = false;
-            }
-            else
-            {
-                float moveDist = Mathf.Clamp(_speed * Time.deltaTime, 0, dir.magnitude);
-                transform.position += dir.normalized * moveDist;
-                transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 10.0f);
-            }
+            case PlayerState.Die:
+                UpdateDie();
+                break;
+            case PlayerState.Moving:
+                UpdateMoving();
+                break;
+            case PlayerState.Idle:
+                UpdateIdle();
+                break;
         }
     }
 
-    void OnKeyboard()
-    {
-        if (Input.GetKey(KeyCode.W))
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.forward), Time.deltaTime * 5.0f);
-            transform.position += Vector3.forward * Time.deltaTime * _speed;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.back), Time.deltaTime * 5.0f);
-            transform.position += Vector3.back * Time.deltaTime * _speed;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.left), Time.deltaTime * 5.0f);
-            transform.position += Vector3.left * Time.deltaTime * _speed;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.right), Time.deltaTime * 5.0f);
-            transform.position += Vector3.right * Time.deltaTime * _speed;
-        }
+    #region 키보드 움직임
+    //void OnKeyboard()
+    //{
+    //    if (Input.GetKey(KeyCode.W))
+    //    {
+    //        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.forward), Time.deltaTime * 5.0f);
+    //        transform.position += Vector3.forward * Time.deltaTime * _speed;
+    //    }
+    //    if (Input.GetKey(KeyCode.S))
+    //    {
+    //        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.back), Time.deltaTime * 5.0f);
+    //        transform.position += Vector3.back * Time.deltaTime * _speed;
+    //    }
+    //    if (Input.GetKey(KeyCode.A))
+    //    {
+    //        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.left), Time.deltaTime * 5.0f);
+    //        transform.position += Vector3.left * Time.deltaTime * _speed;
+    //    }
+    //    if (Input.GetKey(KeyCode.D))
+    //    {
+    //        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(Vector3.right), Time.deltaTime * 5.0f);
+    //        transform.position += Vector3.right * Time.deltaTime * _speed;
+    //    }
 
-        _moveToDest = false;
-    }
+    //    _moveToDest = false;
+    //}
+    #endregion
 
     void OnMouseClicked(Define.MouseEvent evt)
     {
-        if (evt != Define.MouseEvent.Click)
+        if (_state == PlayerState.Die)
             return;
-
-        Debug.Log("OnMouseClicked");
 
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         Debug.DrawRay(Camera.main.transform.position, ray.direction * 100.0f, Color.red, 1.0f);
@@ -161,7 +200,7 @@ public class PlayerController : MonoBehaviour
         {
             // 목적지를 저장했다가 이동한다.
             _destPos = hit.point;
-            _moveToDest = true;
+            _state = PlayerState.Moving;
         }
     }
 }

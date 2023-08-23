@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class InputManager
 {
@@ -13,6 +14,10 @@ public class InputManager
 
     public void OnUpdate()
     {
+        // UI 위에 마우스가 올라가 있다면 (UI 위에서는 플레이어가 움직이지 않도록)
+        if (EventSystem.current.IsPointerOverGameObject()) 
+            return;
+
         // 키보드 입력을 액션으로 전파
         if (Input.anyKey && KeyAction != null)
             KeyAction.Invoke();

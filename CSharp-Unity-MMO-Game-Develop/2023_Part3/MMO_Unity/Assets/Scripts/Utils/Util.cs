@@ -3,8 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Util
-{
-    /** 인자 값 : 최상위 부모, 이름, 재귀적 탐색 여부*/
+{ 
+    public static T GetOrAddComponent<T>(GameObject go) where T : UnityEngine.Component
+    {
+        T component = go.GetComponent<T>();
+
+        // 만약 컴포넌트가 없으면, 컴포넌트를 추가한다.
+        if (component == null)
+            component = go.AddComponent<T>();
+
+        // 컴포넌트가 있으면 컴포넌트를 리턴한다.
+        return component;
+    }
+
+    public static GameObject FindChild(GameObject go, string name = null, bool recursive = false)
+    {
+        // 게임 오브젝트는 Transform을 가지고 있기 때문에 FindChild 함수를 재사용한다.
+        Transform transform = FindChild<Transform>(go, name, recursive);
+
+        if (transform == null)
+            return null;
+
+        return transform.gameObject;
+    }
+
     public static T FindChild<T>(GameObject go, string name = null, bool recursive = false) where T : UnityEngine.Object
     {
         // 최상위 객체가 없을 경우 바로 Null 리턴한다.

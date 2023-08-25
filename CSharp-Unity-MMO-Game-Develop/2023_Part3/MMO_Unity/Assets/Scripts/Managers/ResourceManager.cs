@@ -20,7 +20,16 @@ public class ResourceManager
         }
 
         // 재귀를 피하기위해 Object를 붙여주어 명시한다.
-        return Object.Instantiate(prefab, parent);
+        GameObject go = Object.Instantiate(prefab, parent);
+
+        // Instantiate로 생성된 객체들에 (Clone)이 붙는 것을 지워준다.
+        int index = go.name.IndexOf("(Clone)");
+        if (index > 0)
+        {
+            go.name = go.name.Substring(0, index);
+        }
+
+        return go;
     }
 
     public void Destroy(GameObject go)

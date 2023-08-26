@@ -82,8 +82,6 @@ public class PlayerController : MonoBehaviour
 
         Managers.Input.MouseAction -= OnMouseClicked; // 중복 등록 방지
         Managers.Input.MouseAction += OnMouseClicked; // 마우스 입력을 구독 받는다.
-
-        Managers.UI.ShowSceneUI<UI_Inven>();
     }
 
     public enum PlayerState

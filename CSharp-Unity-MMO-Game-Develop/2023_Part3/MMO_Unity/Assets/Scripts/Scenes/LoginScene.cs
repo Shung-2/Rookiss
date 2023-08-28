@@ -11,6 +11,11 @@ public class LoginScene : BaseScene
 
         // 신 타입 설정
         SceneType = Define.Scene.Login;
+
+        for (int i = 0; i < 2; i++)
+        {
+            Managers.Resource.Instantiate("UnityChan");
+        }
     }
 
     private void Update()

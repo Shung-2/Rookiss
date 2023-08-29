@@ -14,10 +14,7 @@ public class GameScene : BaseScene
         // UI 매니저에 UI를 띄우는 함수를 호출한다.
         Managers.UI.ShowSceneUI<UI_Inven>();
 
-        for (int i = 0; i < 5; i++)
-        {
-            Managers.Resource.Instantiate("UnityChan");
-        }
+        Dictionary<int, Stat> dic = Managers.Data.StatDict;
     }
 
     public override void Clear()

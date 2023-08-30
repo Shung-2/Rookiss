@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 #region MyVector
 // 1. 위치 벡터(좌표 > x, y, z)
@@ -56,32 +57,31 @@ struct MyVector
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
-    float _speed = 10.0f;
-
+    PlayerStat _stat;
     Vector3 _destPos;
 
     void Start()
     {
         #region MyVector 예제
-        MyVector to = new MyVector(10.0f, 0.0f, 0.0f);
-        MyVector from = new MyVector(5.0f, 0.0f, 0.0f);
-        MyVector dir = to - from; // 방향 벡터
+        // MyVector to = new MyVector(10.0f, 0.0f, 0.0f);
+        // MyVector from = new MyVector(5.0f, 0.0f, 0.0f);
+        // MyVector dir = to - from; // 방향 벡터
 
-        dir = dir.normalized; // (1.0f, 0.0f, 0.0f)
+        // dir = dir.normalized; // (1.0f, 0.0f, 0.0f)
 
-        MyVector newPos = from + dir * _speed;
+        // MyVector newPos = from + dir * _stat.MoveSpeed;
 
         // 방향 벡터
         // 1. 거리(크기)    // 5
         // 2. 실제 방향     // 우측
         #endregion
 
+        _stat = gameObject.GetComponent<PlayerStat>();
+
         // Managers.Input.KeyAction -= OnKeyboard; // 중복 등록 방지
         // Managers.Input.KeyAction += OnKeyboard; // 키보드 입력을 구독 받는다.
-
-        Managers.Input.MouseAction -= OnMouseClicked; // 중복 등록 방지
-        Managers.Input.MouseAction += OnMouseClicked; // 마우스 입력을 구독 받는다.
+        Managers.Input.MouseAction -= OnMouseEvent; // 중복 등록 방지
+        Managers.Input.MouseAction += OnMouseEvent; // 마우스 입력을 구독 받는다.
     }
 
     public enum PlayerState
@@ -89,6 +89,7 @@ public class PlayerController : MonoBehaviour
         Die,
         Moving,
         Idle,
+        Skill,
     }
 
     PlayerState _state = PlayerState.Idle;
@@ -100,31 +101,60 @@ public class PlayerController : MonoBehaviour
 
     void UpdateMoving()
     {
+        // 몬스터가 내 사정거리보다 가까우면 공격
+        if (_lockTarget != null)
+        {
+            float distance = (_destPos - transform.position).magnitude;
+            if (distance <= 1)
+            {
+                _state = PlayerState.Skill;
+                return;
+            }
+        }
+
         // 방향 벡터를 구한다.
         Vector3 dir = _destPos - transform.position;
 
         // 도착한 상태
-        if (dir.magnitude < 0.0001f)
+        if (dir.magnitude < 0.1f)
         {
             _state = PlayerState.Idle;
         }
         else
         {
-            float moveDist = Mathf.Clamp(_speed * Time.deltaTime, 0, dir.magnitude);
-            transform.position += dir.normalized * moveDist;
+            NavMeshAgent nma = gameObject.GetOrAddComponent<NavMeshAgent>();
+            
+            float moveDist = Mathf.Clamp(_stat.MoveSpeed * Time.deltaTime, 0, dir.magnitude);
+            nma.Move(dir.normalized * moveDist);
+
+            Debug.DrawRay(transform.position + Vector3.up * 0.5f, dir.normalized, Color.green);
+            // 레이캐스트를 이용해 Block 레이어를 만난다면 이동을 멈춘다.
+            if (Physics.Raycast(transform.position + Vector3.up * 0.5f, dir, 1.0f, LayerMask.GetMask("Block")))
+            {
+                if (Input.GetMouseButton(0) == false)
+                    _state = PlayerState.Idle;
+                return;
+            }
+
+            // transform.position += dir.normalized * moveDist;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 10.0f);
         }
 
         // 애니메이션 처리
         Animator anim = GetComponent<Animator>();
         // 현재 게임 상태에 대한 정보를 넘겨준다.
-        anim.SetFloat("speed", _speed);
+        anim.SetFloat("speed", _stat.MoveSpeed);
     }
     void UpdateIdle()
     {
         // 애니메이션 처리
         Animator anim = GetComponent<Animator>();
         anim.SetFloat("speed", 0);
+    }
+
+    void UpdateSkile()
+    {
+        Debug.Log("UpdateSkile");
     }
 
     void Update()
@@ -155,6 +185,9 @@ public class PlayerController : MonoBehaviour
                 break;
             case PlayerState.Idle:
                 UpdateIdle();
+                break;
+            case PlayerState.Skill:
+                UpdateSkile();
                 break;
         }
     }
@@ -187,20 +220,45 @@ public class PlayerController : MonoBehaviour
     //}
     #endregion
 
-    void OnMouseClicked(Define.MouseEvent evt)
+    int _mask = (1 << (int)Define.Layer.Ground) | (1 << (int)Define.Layer.Monster);
+    GameObject _lockTarget;
+    void OnMouseEvent(Define.MouseEvent evt)
     {
         if (_state == PlayerState.Die)
             return;
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Debug.DrawRay(Camera.main.transform.position, ray.direction * 100.0f, Color.red, 1.0f);
-
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 100.0f, LayerMask.GetMask("Wall")))
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        bool raycastHit = Physics.Raycast(ray, out hit, 100.0f, _mask);
+        // Debug.DrawRay(Camera.main.transform.position, ray.direction * 100.0f, Color.red, 1.0f);
+
+        switch (evt)
         {
-            // 목적지를 저장했다가 이동한다.
-            _destPos = hit.point;
-            _state = PlayerState.Moving;
+            case Define.MouseEvent.PointerDown:
+                {
+                    if (raycastHit)
+                    {
+                        // 목적지를 저장했다가 이동한다.
+                        _destPos = hit.point;
+                        _state = PlayerState.Moving;
+
+                        // 땅인지, 몬스터인지 충돌 정보를 파악한다.
+                        if (hit.collider.gameObject.layer == (int)Define.Layer.Monster)
+                            _lockTarget = hit.collider.gameObject;
+                        else
+                            _lockTarget = null;
+                    }
+                }
+                break;
+
+            case Define.MouseEvent.Press:
+                {
+                    if (_lockTarget != null)
+                        _destPos = _lockTarget.transform.position;
+                    else if (raycastHit)
+                        _destPos = hit.point;
+                }
+                break;
         }
     }
 }

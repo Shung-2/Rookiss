@@ -11,6 +11,7 @@ public class InputManager
     public Action<Define.MouseEvent> MouseAction = null;
 
     bool _pressed = false;
+    float _pressedTime = 0;
 
     public void OnUpdate()
     {
@@ -25,17 +26,32 @@ public class InputManager
         // 마우스 입력을 이벤트 전파
         if (MouseAction != null)
         {
-            if (Input.GetMouseButton(0)) // 왼쪽 버튼을 눌렀을 때
+            // 왼쪽 버튼을 눌렀을 때
+            if (Input.GetMouseButton(0)) 
             {
-                MouseAction.Invoke(Define.MouseEvent.Press); // 마우스를 누르고 있는 동안에는 Define.MouseEvent.Press를 인자로 넘겨 액션에 등록된 함수 실행
-                _pressed = true; // 누르는 중임을 표시하는 bool 변수
+                if (!_pressed)
+                {
+                    MouseAction.Invoke(Define.MouseEvent.PointerDown);
+                    _pressedTime = Time.time;
+                }
+
+                MouseAction.Invoke(Define.MouseEvent.Press);
+                _pressed = true;
             }
-            if (Input.GetMouseButtonUp(0))
+            else
             {
-                if (_pressed) // 누르는 중이 아닌데, 눌렸었다면 뗀 상태
-                    MouseAction.Invoke(Define.MouseEvent.Click); // 마우스를 누르고 뗀 상태에는 Define.MouseEvent.Click을 인자로 넘겨 액션에 등록된 함수 실행
+                // 누르는 중이 아니고, 눌렸었다면 뗀 상태
+                if (_pressed) 
+                {
+                    if (Time.time < _pressedTime + 0.2f)
+                        MouseAction.Invoke(Define.MouseEvent.Click);
+
+                    MouseAction.Invoke(Define.MouseEvent.PointerUp);
+                }
                 
-                _pressed = false; // 초기화
+                // 초기화
+                _pressed = false;
+                _pressedTime = 0;
             }
         }
     }

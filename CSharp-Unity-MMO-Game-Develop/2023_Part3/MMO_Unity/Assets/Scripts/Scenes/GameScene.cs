@@ -14,7 +14,10 @@ public class GameScene : BaseScene
         // UI 매니저에 UI를 띄우는 함수를 호출한다.
         Managers.UI.ShowSceneUI<UI_Inven>();
 
-        Dictionary<int, Stat> dic = Managers.Data.StatDict;
+        Dictionary<int, Data.Stat> dic = Managers.Data.StatDict;
+
+        // 커서 컨트롤러를 추가한다.
+        gameObject.GetOrAddComponent<CursorController>();
     }
 
     public override void Clear()

@@ -57,8 +57,51 @@ struct MyVector
 
 public class PlayerController : MonoBehaviour
 {
+    public enum PlayerState
+    {
+        Die,
+        Moving,
+        Idle,
+        Skill,
+    }
+
+    int _mask = (1 << (int)Define.Layer.Ground) | (1 << (int)Define.Layer.Monster);
+
     PlayerStat _stat;
     Vector3 _destPos;
+
+    [SerializeField] PlayerState _state = PlayerState.Idle;
+
+    GameObject _lockTarget;
+
+    public PlayerState State
+    {
+        get { return _state; }
+        set
+        {
+            _state = value;
+
+            // 애니메이션 처리
+            Animator anim = GetComponent<Animator>();
+
+            switch (_state)
+            {
+                case PlayerState.Die:
+                    break;
+                case PlayerState.Moving:
+                    anim.CrossFade("RUN", 0.1f);
+                    break;
+                case PlayerState.Idle:
+                    anim.CrossFade("WAIT", 0.1f);
+                    break;
+                case PlayerState.Skill:
+                    anim.CrossFade("ATTACK", 0.1f, -1, 0);
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
 
     void Start()
     {
@@ -82,17 +125,9 @@ public class PlayerController : MonoBehaviour
         // Managers.Input.KeyAction += OnKeyboard; // 키보드 입력을 구독 받는다.
         Managers.Input.MouseAction -= OnMouseEvent; // 중복 등록 방지
         Managers.Input.MouseAction += OnMouseEvent; // 마우스 입력을 구독 받는다.
-    }
 
-    public enum PlayerState
-    {
-        Die,
-        Moving,
-        Idle,
-        Skill,
+        Managers.UI.MakeWorldSpaceUI<UI_HPBar>(transform);
     }
-
-    PlayerState _state = PlayerState.Idle;
 
     void UpdateDie()
     {
@@ -104,10 +139,11 @@ public class PlayerController : MonoBehaviour
         // 몬스터가 내 사정거리보다 가까우면 공격
         if (_lockTarget != null)
         {
+            _destPos = _lockTarget.transform.position;
             float distance = (_destPos - transform.position).magnitude;
             if (distance <= 1)
             {
-                _state = PlayerState.Skill;
+                State = PlayerState.Skill;
                 return;
             }
         }
@@ -118,7 +154,7 @@ public class PlayerController : MonoBehaviour
         // 도착한 상태
         if (dir.magnitude < 0.1f)
         {
-            _state = PlayerState.Idle;
+            State = PlayerState.Idle;
         }
         else
         {
@@ -132,29 +168,56 @@ public class PlayerController : MonoBehaviour
             if (Physics.Raycast(transform.position + Vector3.up * 0.5f, dir, 1.0f, LayerMask.GetMask("Block")))
             {
                 if (Input.GetMouseButton(0) == false)
-                    _state = PlayerState.Idle;
+                    State = PlayerState.Idle;
                 return;
             }
 
             // transform.position += dir.normalized * moveDist;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 10.0f);
         }
-
-        // 애니메이션 처리
-        Animator anim = GetComponent<Animator>();
-        // 현재 게임 상태에 대한 정보를 넘겨준다.
-        anim.SetFloat("speed", _stat.MoveSpeed);
     }
+
     void UpdateIdle()
     {
-        // 애니메이션 처리
-        Animator anim = GetComponent<Animator>();
-        anim.SetFloat("speed", 0);
+
     }
 
     void UpdateSkile()
     {
-        Debug.Log("UpdateSkile");
+        if (_lockTarget != null)
+        {
+            // 방향 벡터 생성
+            Vector3 dir = _lockTarget.transform.position - transform.position;
+            // 회전 제어
+            Quaternion quat = Quaternion.LookRotation(dir);
+            transform.rotation = Quaternion.Lerp(transform.rotation, quat, 20 * Time.deltaTime);
+        }
+    }
+
+    void OnHitEvent()
+    {
+        Debug.Log("OnHitEvent");
+
+        if (_lockTarget != null)
+        {
+            Stat targetStat = _lockTarget.GetComponent<Stat>();
+            PlayerStat myStat = gameObject.GetComponent<PlayerStat>();
+
+            // 음수 방지
+            int damage = Mathf.Max(0, myStat.Attack - targetStat.Defense);
+            Debug.Log(damage);
+
+            targetStat.Hp -= damage;
+        }
+
+        if (_stopSkill)
+        {
+            State = PlayerState.Idle;
+        }
+        else
+        {
+            State = PlayerState.Skill;
+        }
     }
 
     void Update()
@@ -175,7 +238,7 @@ public class PlayerController : MonoBehaviour
         // transform.rotation = Quaternion.Euler(0.0f, _rotY, 0.0f);
         #endregion
 
-        switch (_state)
+        switch (State)
         {
             case PlayerState.Die:
                 UpdateDie();
@@ -220,13 +283,34 @@ public class PlayerController : MonoBehaviour
     //}
     #endregion
 
-    int _mask = (1 << (int)Define.Layer.Ground) | (1 << (int)Define.Layer.Monster);
-    GameObject _lockTarget;
+    bool _stopSkill = false;
     void OnMouseEvent(Define.MouseEvent evt)
     {
-        if (_state == PlayerState.Die)
-            return;
+        switch (State)
+        {
+            case PlayerState.Die:
+                break;
+            case PlayerState.Moving:
+                OnMouseEvent_IdleRun(evt);
+                break;
+            case PlayerState.Idle:
+                OnMouseEvent_IdleRun(evt);
+                break;
+            case PlayerState.Skill:
+                {
+                    if (evt == Define.MouseEvent.PointerUp)
+                    {
+                        _stopSkill = true;
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
 
+    void OnMouseEvent_IdleRun(Define.MouseEvent evt)
+    {
         RaycastHit hit;
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         bool raycastHit = Physics.Raycast(ray, out hit, 100.0f, _mask);
@@ -240,7 +324,8 @@ public class PlayerController : MonoBehaviour
                     {
                         // 목적지를 저장했다가 이동한다.
                         _destPos = hit.point;
-                        _state = PlayerState.Moving;
+                        State = PlayerState.Moving;
+                        _stopSkill = false;
 
                         // 땅인지, 몬스터인지 충돌 정보를 파악한다.
                         if (hit.collider.gameObject.layer == (int)Define.Layer.Monster)
@@ -253,10 +338,14 @@ public class PlayerController : MonoBehaviour
 
             case Define.MouseEvent.Press:
                 {
-                    if (_lockTarget != null)
-                        _destPos = _lockTarget.transform.position;
-                    else if (raycastHit)
+                    if (_lockTarget == null && raycastHit)
                         _destPos = hit.point;
+                }
+                break;
+
+            case Define.MouseEvent.PointerUp:
+                {
+                    _stopSkill = true;
                 }
                 break;
         }

@@ -10,8 +10,12 @@ public abstract class UI_Base : MonoBehaviour
 {
     // 딕셔너리를 이용하여 버튼/텍스트 등을 Object 배열로 들고있는다.
     protected Dictionary<Type, UnityEngine.Object[]> _objects = new Dictionary<Type, UnityEngine.Object[]>();
-
     public abstract void Init();
+
+    private void Start()
+    {
+        Init();
+    }
 
     // 제네릭&리플렉션을 이용한 Bind
     protected void Bind<T>(Type type) where T : UnityEngine.Object

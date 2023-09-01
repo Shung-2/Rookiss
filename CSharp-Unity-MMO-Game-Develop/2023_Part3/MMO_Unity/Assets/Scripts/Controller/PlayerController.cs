@@ -55,55 +55,14 @@ struct MyVector
 }
 #endregion
 
-public class PlayerController : MonoBehaviour
+public class PlayerController : BaseController
 {
-    public enum PlayerState
-    {
-        Die,
-        Moving,
-        Idle,
-        Skill,
-    }
-
     int _mask = (1 << (int)Define.Layer.Ground) | (1 << (int)Define.Layer.Monster);
 
     PlayerStat _stat;
-    Vector3 _destPos;
+    bool _stopSkill = false;
 
-    [SerializeField] PlayerState _state = PlayerState.Idle;
-
-    GameObject _lockTarget;
-
-    public PlayerState State
-    {
-        get { return _state; }
-        set
-        {
-            _state = value;
-
-            // 애니메이션 처리
-            Animator anim = GetComponent<Animator>();
-
-            switch (_state)
-            {
-                case PlayerState.Die:
-                    break;
-                case PlayerState.Moving:
-                    anim.CrossFade("RUN", 0.1f);
-                    break;
-                case PlayerState.Idle:
-                    anim.CrossFade("WAIT", 0.1f);
-                    break;
-                case PlayerState.Skill:
-                    anim.CrossFade("ATTACK", 0.1f, -1, 0);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    void Start()
+    public override void Init()
     {
         #region MyVector 예제
         // MyVector to = new MyVector(10.0f, 0.0f, 0.0f);
@@ -119,6 +78,7 @@ public class PlayerController : MonoBehaviour
         // 2. 실제 방향     // 우측
         #endregion
 
+        WorldObjectType = Define.WorldObject.Player;
         _stat = gameObject.GetComponent<PlayerStat>();
 
         // Managers.Input.KeyAction -= OnKeyboard; // 중복 등록 방지
@@ -126,15 +86,11 @@ public class PlayerController : MonoBehaviour
         Managers.Input.MouseAction -= OnMouseEvent; // 중복 등록 방지
         Managers.Input.MouseAction += OnMouseEvent; // 마우스 입력을 구독 받는다.
 
-        Managers.UI.MakeWorldSpaceUI<UI_HPBar>(transform);
+        if (gameObject.GetComponentInChildren<UI_HPBar>() == null)
+            Managers.UI.MakeWorldSpaceUI<UI_HPBar>(transform);
     }
 
-    void UpdateDie()
-    {
-        // 현재는 아무것도 하지 않는다.
-    }
-
-    void UpdateMoving()
+    protected override void UpdateMoving()
     {
         // 몬스터가 내 사정거리보다 가까우면 공격
         if (_lockTarget != null)
@@ -143,7 +99,7 @@ public class PlayerController : MonoBehaviour
             float distance = (_destPos - transform.position).magnitude;
             if (distance <= 1)
             {
-                State = PlayerState.Skill;
+                State = Define.State.Skill;
                 return;
             }
         }
@@ -154,35 +110,28 @@ public class PlayerController : MonoBehaviour
         // 도착한 상태
         if (dir.magnitude < 0.1f)
         {
-            State = PlayerState.Idle;
+            State = Define.State.Idle;
         }
         else
         {
-            NavMeshAgent nma = gameObject.GetOrAddComponent<NavMeshAgent>();
-            
-            float moveDist = Mathf.Clamp(_stat.MoveSpeed * Time.deltaTime, 0, dir.magnitude);
-            nma.Move(dir.normalized * moveDist);
-
             Debug.DrawRay(transform.position + Vector3.up * 0.5f, dir.normalized, Color.green);
             // 레이캐스트를 이용해 Block 레이어를 만난다면 이동을 멈춘다.
             if (Physics.Raycast(transform.position + Vector3.up * 0.5f, dir, 1.0f, LayerMask.GetMask("Block")))
             {
                 if (Input.GetMouseButton(0) == false)
-                    State = PlayerState.Idle;
+                    State = Define.State.Idle;
                 return;
             }
+
+            float moveDist = Mathf.Clamp(_stat.MoveSpeed * Time.deltaTime, 0, dir.magnitude);
+            transform.position += dir.normalized * moveDist;
 
             // transform.position += dir.normalized * moveDist;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(dir), Time.deltaTime * 10.0f);
         }
     }
 
-    void UpdateIdle()
-    {
-
-    }
-
-    void UpdateSkile()
+    protected override void UpdateSkile()
     {
         if (_lockTarget != null)
         {
@@ -205,30 +154,27 @@ public class PlayerController : MonoBehaviour
 
             // 음수 방지
             int damage = Mathf.Max(0, myStat.Attack - targetStat.Defense);
-            Debug.Log(damage);
-
             targetStat.Hp -= damage;
         }
 
         if (_stopSkill)
         {
-            State = PlayerState.Idle;
+            State = Define.State.Idle;
         }
         else
         {
-            State = PlayerState.Skill;
+            State = Define.State.Skill;
         }
     }
 
-    void Update()
-    {
+    //void Update()
+    //{
         #region 로컬 > 월드, 월드 > 로컬 전환시 사용하는 함수 목록
         // Local > World
         // TransforDirection()
         // World > Local
         // InverseTransformDirection()
         #endregion
-
         #region 회전 예제
         // 절대 회전값
         //transform.eulerAngles += new Vector3(0.0f, _rotY, 0.0f);
@@ -237,23 +183,7 @@ public class PlayerController : MonoBehaviour
         // transform.Rotate(new Vector3(0.0f, _rotY, 0.0f));
         // transform.rotation = Quaternion.Euler(0.0f, _rotY, 0.0f);
         #endregion
-
-        switch (State)
-        {
-            case PlayerState.Die:
-                UpdateDie();
-                break;
-            case PlayerState.Moving:
-                UpdateMoving();
-                break;
-            case PlayerState.Idle:
-                UpdateIdle();
-                break;
-            case PlayerState.Skill:
-                UpdateSkile();
-                break;
-        }
-    }
+    //}
 
     #region 키보드 움직임
     //void OnKeyboard()
@@ -283,20 +213,19 @@ public class PlayerController : MonoBehaviour
     //}
     #endregion
 
-    bool _stopSkill = false;
     void OnMouseEvent(Define.MouseEvent evt)
     {
         switch (State)
         {
-            case PlayerState.Die:
+            case Define.State.Die:
                 break;
-            case PlayerState.Moving:
+            case Define.State.Moving:
                 OnMouseEvent_IdleRun(evt);
                 break;
-            case PlayerState.Idle:
+            case Define.State.Idle:
                 OnMouseEvent_IdleRun(evt);
                 break;
-            case PlayerState.Skill:
+            case Define.State.Skill:
                 {
                     if (evt == Define.MouseEvent.PointerUp)
                     {
@@ -324,7 +253,7 @@ public class PlayerController : MonoBehaviour
                     {
                         // 목적지를 저장했다가 이동한다.
                         _destPos = hit.point;
-                        State = PlayerState.Moving;
+                        State = Define.State.Moving;
                         _stopSkill = false;
 
                         // 땅인지, 몬스터인지 충돌 정보를 파악한다.

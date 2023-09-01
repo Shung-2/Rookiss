@@ -18,6 +18,11 @@ public class GameScene : BaseScene
 
         // 커서 컨트롤러를 추가한다.
         gameObject.GetOrAddComponent<CursorController>();
+
+        // 플레이어와 몬스터를 생성한다
+        GameObject player =  Managers.Game.Spawn(Define.WorldObject.Player, "UnityChan");
+        Camera.main.gameObject.GetOrAddComponent<CameraController>().SetPlayer(player);
+        Managers.Game.Spawn(Define.WorldObject.Monster, "Knight");
     }
 
     public override void Clear()

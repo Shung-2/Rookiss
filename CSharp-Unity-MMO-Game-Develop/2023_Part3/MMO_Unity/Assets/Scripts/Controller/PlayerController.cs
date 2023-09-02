@@ -106,6 +106,8 @@ public class PlayerController : BaseController
 
         // 방향 벡터를 구한다.
         Vector3 dir = _destPos - transform.position;
+        // y축은 무시한다.
+        dir.y = 0; 
 
         // 도착한 상태
         if (dir.magnitude < 0.1f)
@@ -145,16 +147,10 @@ public class PlayerController : BaseController
 
     void OnHitEvent()
     {
-        Debug.Log("OnHitEvent");
-
         if (_lockTarget != null)
         {
             Stat targetStat = _lockTarget.GetComponent<Stat>();
-            PlayerStat myStat = gameObject.GetComponent<PlayerStat>();
-
-            // 음수 방지
-            int damage = Mathf.Max(0, myStat.Attack - targetStat.Defense);
-            targetStat.Hp -= damage;
+            targetStat.OnAttacked(_stat);
         }
 
         if (_stopSkill)

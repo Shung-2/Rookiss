@@ -22,12 +22,13 @@ public class MonsterController : BaseController
 
     protected override void UpdateIdle()
     {
-        // TODO : 매니저가 생길경우 옮기자
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        // 플레이어를 매니저를 통해 불러온다.
+        GameObject player = Managers.Game.GetPlayer();
         
         if (player == null)
             return;
 
+        // 거리, 범위 체크
         float distance = (player.transform.position - transform.position).magnitude;
         if (distance <= _scanRange)
         {
@@ -90,10 +91,7 @@ public class MonsterController : BaseController
         if (_lockTarget != null)
         {
             Stat targetStat = _lockTarget.GetComponent<Stat>();
-
-            // 음수 방지
-            int damage = Mathf.Max(0, _stat.Attack - targetStat.Defense);
-            targetStat.Hp -= damage;
+            targetStat.OnAttacked(_stat);
 
             if (targetStat.Hp <= 0)
             {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices.ObjectiveC;
 using System.Text;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ServerCore
 {
-    class Session
+    abstract class Session
     {
         Socket _socket;
         int _disconnected = 0;
@@ -18,6 +19,11 @@ namespace ServerCore
         List<ArraySegment<byte>> _pendinglist = new List<ArraySegment<byte>>();
         SocketAsyncEventArgs _recvArgs = new SocketAsyncEventArgs();
         SocketAsyncEventArgs _sendArgs = new SocketAsyncEventArgs();
+
+        public abstract void OnConnected(EndPoint endPoint);
+        public abstract void OnRecv(ArraySegment<byte> buffer);
+        public abstract void OnSend(int numOfBytes);
+        public abstract void OnDisconnected(EndPoint endPoint);
 
         public void Start(Socket socket)
         {
@@ -50,6 +56,7 @@ namespace ServerCore
                 return;
             }
 
+            OnDisconnected(_socket.RemoteEndPoint);
             _socket.Shutdown(SocketShutdown.Both);
             _socket.Close();
         }
@@ -83,8 +90,7 @@ namespace ServerCore
                         // 성공적으로 데이터를 모두 전송했으므로 리스트를 비워준다.
                         _pendinglist.Clear();
 
-                        // 로그
-                        Console.WriteLine($"Transferred bytes: {_sendArgs.BytesTransferred}");
+                        OnSend(_sendArgs.BytesTransferred);
 
                         if (_sendQueue.Count > 0)
                         {
@@ -119,8 +125,7 @@ namespace ServerCore
             {
                 try
                 {
-                    string recvData = Encoding.UTF8.GetString(args.Buffer, args.Offset, args.BytesTransferred);
-                    Console.WriteLine($"[From Client] {recvData}");
+                    OnRecv(new ArraySegment<byte>(args.Buffer, args.Offset, args.BytesTransferred));
                     RegisterRecv();
                 }
                 catch (Exception e)

@@ -17,6 +17,7 @@ namespace ServerCore
             _buffer = new ArraySegment<byte>(new byte[bufferSize], 0, bufferSize);
         }
 
+        // 버퍼의 유효 사이즈. 데이터가 얼마나 쌓였는지를 체크한다.
         public int DataSize { get { return _writePos - _readPos; } }
         // 버퍼의 남은 공간
         public int FreeSize { get { return _buffer.Count - _writePos; } } 
@@ -27,6 +28,7 @@ namespace ServerCore
             get { return new ArraySegment<byte>(_buffer.Array, _buffer.Offset + _readPos, DataSize); }
         }
 
+        // 버퍼의 남은 공간 크기
         public ArraySegment<byte> WriteSegment
         {
             get { return new ArraySegment<byte>(_buffer.Array, _buffer.Offset + _writePos, FreeSize); }

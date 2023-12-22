@@ -9,6 +9,13 @@ public enum PacketID
     PlayerInfoOk = 2,
 }
 
+interface IPacket
+{
+    ushort Protocol { get; }
+    void Read(ArraySegment<byte> segment);
+    ArraySegment<byte> Write();
+}
+
 public abstract class Packet
 {
     public ushort size;
@@ -22,8 +29,7 @@ class PlayerInfoReq : Packet
 {
     public long playerId;
     public string name;
-
-    public struct SkillInfo
+    public class SkillInfo
     {
         public int id;
         public short level;
@@ -51,7 +57,6 @@ class PlayerInfoReq : Packet
             count += sizeof(float);
         }
     }
-
     public List<SkillInfo> skills = new List<SkillInfo>();
 
     // PlayerInfoReq 생성자
@@ -59,6 +64,8 @@ class PlayerInfoReq : Packet
     {
         this.packetId = (ushort)PacketID.PlayerInfoReq;
     }
+
+    public ushort Protocol { get { return (ushort)PacketID.PlayerInfoReq; } }
 
     public override void Read(ArraySegment<byte> segment)
     {

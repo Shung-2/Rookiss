@@ -25,9 +25,15 @@ namespace Server
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			Console.WriteLine("Listening...");
 
+			int roomTick = 0;
 			while (true)
 			{
-				;
+				int now = System.Environment.TickCount;
+				if (100 < now - roomTick)
+				{
+					Room.Push(() => Room.Flush());
+                    roomTick = now + 250;
+                }
 			}
 		}
 	}

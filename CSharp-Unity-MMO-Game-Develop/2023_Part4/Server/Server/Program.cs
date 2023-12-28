@@ -14,6 +14,13 @@ namespace Server
 		static Listener _listener = new Listener();
 		public static GameRoom Room = new GameRoom();
 
+		static void FlushRoom()
+		{
+            Room.Push(() => Room.Flush());
+			// FlushRoom 함수를 250ms 마다 호출하도록 예약
+            JobTimer.Instance.Push(FlushRoom, 250);
+        }
+
 		static void Main(string[] args)
 		{
 			// DNS (Domain Name System)
@@ -25,15 +32,13 @@ namespace Server
 			_listener.Init(endPoint, () => { return SessionManager.Instance.Generate(); });
 			Console.WriteLine("Listening...");
 
-			int roomTick = 0;
+			// FlushRoom();
+			// 카운트를 0으로 설정하여 바로 실행되도록 한다.
+			JobTimer.Instance.Push(FlushRoom);
+
 			while (true)
 			{
-				int now = System.Environment.TickCount;
-				if (100 < now - roomTick)
-				{
-					Room.Push(() => Room.Flush());
-                    roomTick = now + 250;
-                }
+				JobTimer.Instance.Flush();
 			}
 		}
 	}

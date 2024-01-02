@@ -18,7 +18,7 @@ namespace DummyClient
             Connector connector = new Connector();
             connector.Connect(endPoint, 
                 () => { return SessionManager.Instance.Generate(); },
-                500);
+                10);
 
             while (true)
             {
@@ -36,5 +36,3 @@ namespace DummyClient
         }
     }
 }
-
-// 231031 퇴근 후 공부는 이론 공부로 인한 코드내용 변경 없음! 단순 커밋을 위한 주석을 추가적으로 작성한다.

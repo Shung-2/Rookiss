@@ -45,15 +45,14 @@ namespace ServerCore
 
             if (packetCount > 1)
             {
-                Console.WriteLine($"패킷 모아보내기(Packet Count) : {packetCount}");
+                Console.WriteLine($"패킷 모아보내기 : {packetCount}");
             }
 
-            return 0;
+            return processLen;
         }
 
         // 별도로 보내주는 OnRecvPacket 인터페이스로 받아야 한다.
         public abstract void OnRecvPacket(ArraySegment<byte> buffer);
-
     }
 
     public abstract class Session

@@ -53,7 +53,7 @@ namespace ServerCore
         // 사이즈를 얼마만큼 사용할 것인가?
         public ArraySegment<byte> Open(int reserveSize)
         {
-           if (reserveSize > FreeSize)
+            if (reserveSize > FreeSize)
             {
                 return null;
             }

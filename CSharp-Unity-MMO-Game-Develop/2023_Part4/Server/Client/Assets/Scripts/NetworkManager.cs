@@ -2,12 +2,18 @@ using DummyClient;
 using ServerCore;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Net;
 using UnityEngine;
 
 public class NetworkManager : MonoBehaviour
 {
     ServerSession _session = new ServerSession();
+
+    public void Send(ArraySegment<byte> sendBuff)
+    {
+        _session.Send(sendBuff);
+    }
 
     void Start()
     {
@@ -21,28 +27,14 @@ public class NetworkManager : MonoBehaviour
             () => { return _session; },
             1);
 
-        StartCoroutine("CoSendPacket");
     }
 
     void Update()
     {
-        IPacket packet = PacketQueue.instance.Pop();
-        if (packet != null)
+        List<IPacket> list = PacketQueue.instance.PopAll();
+        foreach (IPacket packet in list)
         {
             PacketManager.Instance.HandlePacket(_session, packet);
-        }
-    }
-
-    IEnumerator CoSendPacket()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(3.0f);
-
-            C_Chat chatPacket = new C_Chat();
-            chatPacket.chat = $"Hello Unity!";
-            ArraySegment<byte> segment = chatPacket.Write();
-            _session.Send(segment);
         }
     }
 }

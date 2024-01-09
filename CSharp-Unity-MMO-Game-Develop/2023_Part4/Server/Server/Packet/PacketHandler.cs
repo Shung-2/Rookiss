@@ -29,7 +29,7 @@ class PacketHandler
             return;
         }
 
-        Console.WriteLine($"C_Move ({movePacket.posX}, {movePacket.posY}, {movePacket.posZ})");
+        // Console.WriteLine($"C_Move ({movePacket.posX}, {movePacket.posY}, {movePacket.posZ})");
 
         GameRoom room = clientSession.Room;
         room.Push(() => room.Move(clientSession, movePacket));

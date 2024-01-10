@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerManager
 {
-    MyPlayer _myplayer;
+    MyPlayer _myPlayer;
     Dictionary<int, Player> _players = new Dictionary<int, Player>();
 
     public static PlayerManager Instance { get; } = new PlayerManager();
@@ -23,7 +23,7 @@ public class PlayerManager
                 MyPlayer myPlayer = go.AddComponent<MyPlayer>();
                 myPlayer.PlayerId = p.playerId;
                 myPlayer.transform.position = new Vector3(p.posX, p.posY, p.posZ);
-                _myplayer = myPlayer;
+                _myPlayer = myPlayer;
             }
             else
             {
@@ -42,9 +42,9 @@ public class PlayerManager
         // 2. 클라이언트쪽에서 이동을 하고 서버에게 응답이 올 경우 보정하는 방법
 
         // 현재 구현 방식은 1번 방식을 따른다.
-        if (_myplayer.PlayerId == packet.playerId)
+        if (_myPlayer.PlayerId == packet.playerId)
         {
-            _myplayer.transform.position = new Vector3(packet.posX, packet.posY, packet.posZ);
+            _myPlayer.transform.position = new Vector3(packet.posX, packet.posY, packet.posZ);
         }
         else
         {
@@ -59,7 +59,7 @@ public class PlayerManager
     // 내가 이미 접속한 상태에서 새로 접속을 할 경우
     public void EnterGame(S_BroadcastEnterGame packet)
     {
-        if (_myplayer.PlayerId == packet.playerId)
+        if (packet.playerId == _myPlayer.PlayerId)
         {
             return;
         }
@@ -74,10 +74,10 @@ public class PlayerManager
 
     public void LeaveGame(S_BroadcastLeaveGame packet)
     {
-        if (_myplayer.PlayerId == packet.playerId)
+        if (_myPlayer.PlayerId == packet.playerId)
         {
-            GameObject.Destroy(_myplayer.gameObject);
-            _myplayer = null;
+            GameObject.Destroy(_myPlayer.gameObject);
+            _myPlayer = null;
         }
         else
         {
@@ -87,7 +87,7 @@ public class PlayerManager
             if (_players.TryGetValue(packet.playerId, out player))
             {
                 // 찾았으면 삭제를 해줄게요.
-                Object.Destroy(player.gameObject);
+                GameObject.Destroy(player.gameObject);
                 _players.Remove(packet.playerId);
             }
         }

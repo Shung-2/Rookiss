@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PacketQueue
 {
-    public static PacketQueue instance { get; } = new PacketQueue();
+    public static PacketQueue Instance { get; } = new PacketQueue();
 
     Queue<IPacket> _packetQueue = new Queue<IPacket>();
     object _lock = new object();
@@ -19,7 +19,7 @@ public class PacketQueue
 
     public IPacket Pop()
     {
-        lock ( _lock)
+        lock (_lock)
         {
             if (_packetQueue.Count == 0)
                 return null;

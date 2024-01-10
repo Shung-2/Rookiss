@@ -45,7 +45,7 @@ namespace ServerCore
                 Console.WriteLine($"패킷 모아보내기(Packet Count) : {packetCount}");
             }
 
-            return 0;
+            return processLen;
         }
 
         // 별도로 보내주는 OnRecvPacket 인터페이스로 받아야 한다.
@@ -62,16 +62,16 @@ namespace ServerCore
 
         object _lock = new object();
         Queue<ArraySegment<byte>> _sendQueue = new Queue<ArraySegment<byte>>();
-        List<ArraySegment<byte>> _pendinglist = new List<ArraySegment<byte>>();
-        SocketAsyncEventArgs _recvArgs = new SocketAsyncEventArgs();
+        List<ArraySegment<byte>> _pendingList = new List<ArraySegment<byte>>();
         SocketAsyncEventArgs _sendArgs = new SocketAsyncEventArgs();
+        SocketAsyncEventArgs _recvArgs = new SocketAsyncEventArgs();
 
         void Clear()
         {
             lock (_lock)
             {
                 _sendQueue.Clear();
-                _pendinglist.Clear();
+                _pendingList.Clear();
             }
         }
 
@@ -102,7 +102,7 @@ namespace ServerCore
                 foreach (ArraySegment<byte> sendBuff in sendBuffList)
                     _sendQueue.Enqueue(sendBuff);
 
-                if (_pendinglist.Count == 0)
+                if (_pendingList.Count == 0)
                 {
                     RegisterSend();
                 }
@@ -114,7 +114,7 @@ namespace ServerCore
             lock (_lock)
             {
                 _sendQueue.Enqueue(sendBuff);
-                if (_pendinglist.Count == 0)
+                if (_pendingList.Count == 0)
                 {
                     RegisterSend();
                 }
@@ -145,9 +145,9 @@ namespace ServerCore
             while (_sendQueue.Count > 0)
             {
                 ArraySegment<byte> buff = _sendQueue.Dequeue();
-                _pendinglist.Add(buff);
+                _pendingList.Add(buff);
             }
-            _sendArgs.BufferList = _pendinglist;
+            _sendArgs.BufferList = _pendingList;
 
             try
             {
@@ -173,7 +173,7 @@ namespace ServerCore
                     {
                         _sendArgs.BufferList = null;
                         // 성공적으로 데이터를 모두 전송했으므로 리스트를 비워준다.
-                        _pendinglist.Clear();
+                        _pendingList.Clear();
 
                         OnSend(_sendArgs.BytesTransferred);
 

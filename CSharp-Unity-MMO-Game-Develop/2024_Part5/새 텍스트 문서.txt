@@ -1,1 +1,2 @@
 240122 SQL 입문 - SSMS 입문 수강.
+230123 SQL 입문 - SELECT FROM WHERE 수강.

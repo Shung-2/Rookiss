@@ -3,3 +3,4 @@
 240124 SQL 입문 - ORDER BY 수강.
 240125 SQL 입문 - 수치와 문자열 수강.
 240205 SQL 입문 - DATETIME 수강.
+240202 SQL 입문 - CASE 수강.

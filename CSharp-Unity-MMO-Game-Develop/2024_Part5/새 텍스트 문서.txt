@@ -10,3 +10,6 @@
 240212 SQL 입문 - INSERT, DELETE, UPDATE 수강.
 240213 SQL 입문 - SUBQUERY 수강.
 240213 SQL 입문 - 데이터베이스 작성 수강.
+240213 SQL 입문 - 정규화 수강.
+240213 SQL 입문 - INDEX 수강.
+240213 SQL 입문 - UNION 수강.

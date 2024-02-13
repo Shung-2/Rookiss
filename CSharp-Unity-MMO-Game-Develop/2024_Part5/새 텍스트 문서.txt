@@ -8,3 +8,4 @@
 240208 SQL 입문 - 연습문제 수강.
 240212 SQL 입문 - GROUP BY 수강.
 240212 SQL 입문 - INSERT, DELETE, UPDATE 수강.
+240213 SQL 입문 - SUBQUERY 수강.

@@ -23,19 +23,16 @@ ON TestOrderDetails(OrderID, ProductID);
 -- 인덱스 정보 살펴보기
 EXEC sp_helpindex 'TestOrderDetails';
 
+-- 총 4가지로 조회한다.
+-- OrderID, ProductID로 조회할 때,
+-- ProductID, OrderID로 조회할 때,
+-- OrderID 조회할 때,
+-- ProductID 조회할 때,
+
 -- 인덱스 적용 테스트 1 > GOOD
 SELECT *
 FROM TestOrderDetails
 WHERE OrderID = 10248 AND ProductID = 11;
-
--- 총 3가지로 조회한다.
--- OrderID, ProductID로 조회할 때,
--- OrderID 조회할 때,
--- ProductID 조회할 때,
-
--- 결과값은 다음과 같다
--- INDEX SCAN (=INDEX FULL SCAN) > BAD - 풀스캔을 다 때리고 있으므로 나쁜 상황
--- INDEX SEEK > GOOD - 인덱스를 정상적으로 활용이 되는 상태
 
 -- 인덱스 적용 테스트 2 > GOOD
 SELECT *
@@ -47,10 +44,14 @@ SELECT *
 FROM TestOrderDetails
 WHERE OrderID = 10248;
 
--- 인덱스 적용 테스트 3 > BAD
+-- 인덱스 적용 테스트 4 > BAD
 SELECT *
 FROM TestOrderDetails
 WHERE ProductID = 11;
+
+-- 결과값은 다음과 같다
+-- INDEX SCAN (=INDEX FULL SCAN) > BAD - 풀스캔을 다 때리고 있으므로 나쁜 상황
+-- INDEX SEEK > GOOD - 인덱스를 정상적으로 활용이 되는 상태
 
 -- 인덱스 정보를 살펴보자
 DBCC IND('Northwind', 'TestOrderDetails', 2);

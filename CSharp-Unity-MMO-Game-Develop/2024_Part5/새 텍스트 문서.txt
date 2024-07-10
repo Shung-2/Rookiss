@@ -20,3 +20,4 @@
 240602 SQL 튜닝 - 인덱스 분석 수강.
 240604 SQL 튜닝 - 복합 인덱스 수강.
 240615 SQL 튜닝 - Clustered vs NonClustered 수강.
+240710 SQL 튜닝 - Index Scan Vs Index Seek

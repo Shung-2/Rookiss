@@ -22,3 +22,4 @@
 240615 SQL 튜닝 - Clustered vs NonClustered 수강.
 240710 SQL 튜닝 - Index Scan Vs Index Seek 수강.
 240711 SQL 튜닝 - 북마크 룩업 수강.
+240712 SQL 튜닝 - 인덱스 컬럼 순서 수강.

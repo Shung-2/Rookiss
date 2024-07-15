@@ -15,7 +15,7 @@ namespace ConsoleApp1
         class Salary
         {
             public int playerId;
-            /// ...
+            // ...
         }
 
         public void NestedLoop()

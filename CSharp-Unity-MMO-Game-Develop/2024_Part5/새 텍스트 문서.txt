@@ -26,3 +26,4 @@
 240714 SQL 튜닝 - Nested Loop 조인 수강.
 240715 SQL 튜닝 - Merge 조인 수강.
 240717 SQL 튜닝 - Hash 조인 수강.
+240718 SQL 튜닝 - Sorting 수강.

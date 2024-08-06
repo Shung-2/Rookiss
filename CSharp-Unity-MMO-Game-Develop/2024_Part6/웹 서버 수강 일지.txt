@@ -3,3 +3,4 @@
 240726 웹 기초 (HTML, CSS) - 환경 설정 수강.
 240802 웹 기초 (HTML, CSS) - HTML #1 수강.
 240805 웹 기초 (HTML, CSS) - HTML #2 수강.
+240806 웹 기초 (HTML, CSS) - HTML #3 수강.

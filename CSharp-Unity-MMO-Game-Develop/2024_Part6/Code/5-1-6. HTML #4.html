@@ -1,0 +1,80 @@
+<!--
+<!DOCTYPE html>은 도큐먼트의 타입을 알려준다. 모든 HTML의 문서는 DOCType으로 시작을 해야하는 것이다.
+ -->
+
+<!--
+<html>은 모든 HTML의 루트(Root)를 나타낸다. 즉 뿌리를 뜻한다.
+doctype을 제외한 모든 html 태그 요소들은 html 태그 안에 들어가야 한다.
+-->
+
+<!--
+<head>의 <title>은 페이지 내부의 내용이 아닌 탭의 '제목'을 가리킨다.
+<meta>는 메타 데이터의 약자인데. 메타 데이터는 데이터의 데이터이다.
+가장 중요한 것은 인코딩을 담당하는 charset이다. UTF-8, 16에 따라 인코딩이 달라진다.
+-->
+
+<!--
+<body>는 HTML의 몸통을 가르킨다. 대부분의 모든 태그는 다 body안에 담긴다.
+-->
+
+<!--
+<div>는 division의 약자로 구역, 섹션을 뜻한다.
+div 별로 스타일을 사용할 수 있다는 장점이 있다.
+-->
+
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset = "UTF-8">
+  <title>Title of the document</title>
+  <style>
+  table, th, td {
+    border: 1px solid black;
+  }
+  </style>
+</head>
+
+<body>
+
+<h1>컴투스</h1> 공동 창업자 <b>이영일</b> 대표가 설립한 <i>해긴</i>은 <u>‘홈런 클래시’</u>, ‘오버독스’, <strong>‘익스트림 골프’</strong>, ‘플레이투게더’ 등 <br>캐주얼한 매력을 극대화한 다양한 장르의 모바일게임을 개발 및 서비스하는 기업이다.
+
+<p>
+
+이미지
+<img src="img_girl.jpg" alt="Girl in a jacket" width="50" height="60">
+
+<p>
+
+이미지 + 웹사이트 새 창 이동
+<a href = "https://www.naver.com" target = "_blank">
+  <img src="img_girl.jpg" alt="Girl in a jacket" width="50" height="60">
+</a>
+
+<h1>당신이 가장 좋아하는 언어는?</h1>
+<ol>
+  <li>C++</li>
+  <li>C#</li>
+  <li>Java</li>
+  <li>Python</li>
+</ol>
+
+<p>당신이 가장 좋아하는 게임 장르는?</p>
+<ul>
+  <li>MMO</li>
+  <li>FPS</li>
+  <li>RTS</li>
+</ul>
+
+<table>
+  <tr>
+    <th>Month</th>
+    <th>Savings</th>
+  </tr>
+  <tr>
+    <td>January</td>
+    <td>$100</td>
+  </tr>
+</table>
+</body>
+</html>

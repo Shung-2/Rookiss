@@ -5,3 +5,4 @@
 240805 웹 기초 (HTML, CSS) - HTML #2 수강.
 240806 웹 기초 (HTML, CSS) - HTML #3 수강.
 240808 웹 기초 (HTML, CSS) - HTML #4 수강.
+240812 웹 기초 (HTML, CSS) - HTML #5 수강.

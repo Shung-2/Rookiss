@@ -1,0 +1,85 @@
+<!--
+<button> onclick을 통해 클릭할 때 동작할 이벤트를 정의할 수 있다.
+다만, 해당 영역에 자바 스크립트를 넣어서 함수를 통해 동작하도록 설정할 수 있다.
+또한 버튼과 input의 차이점은 버튼 내부에는 <i>, <strong>과 같은 태그들을 사용할 수 있지만, input에서는 이러한 것들의 사용이 불가능하다.
+ -->
+
+ <!--
+
+-->
+
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset = "UTF-8">
+  <title>Title of the document</title>
+  <style>
+  table, th, td {
+    border: 1px solid black;
+  }
+  </style>
+</head>
+
+<body>
+
+<h1>컴투스</h1> 공동 창업자 <b>이영일</b> 대표가 설립한 <i>해긴</i>은 <u>‘홈런 클래시’</u>, ‘오버독스’, <strong>‘익스트림 골프’</strong>, ‘플레이투게더’ 등 <br>캐주얼한 매력을 극대화한 다양한 장르의 모바일게임을 개발 및 서비스하는 기업이다.
+
+<p>
+
+이미지
+<img src="img_girl.jpg" alt="Girl in a jacket" width="50" height="60">
+
+<p>
+
+이미지 + 웹사이트 새 창 이동
+<a href = "https://www.naver.com" target = "_blank">
+  <img src="img_girl.jpg" alt="Girl in a jacket" width="50" height="60">
+</a>
+
+<h1>당신이 가장 좋아하는 언어는?</h1>
+<ol>
+  <li>C++</li>
+  <li>C#</li>
+  <li>Java</li>
+  <li>Python</li>
+</ol>
+
+<p>당신이 가장 좋아하는 게임 장르는?</p>
+<ul>
+  <li>MMO</li>
+  <li>FPS</li>
+  <li>RTS</li>
+</ul>
+
+<table>
+  <tr>
+    <th>Month</th>
+    <th>Savings</th>
+  </tr>
+  <tr>
+    <td>January</td>
+    <td>$100</td>
+  </tr>
+</table>
+
+<p>
+<button type="button" onclick="testFunc()">Click Me!</button>
+
+<script>
+
+function testFunc()
+{
+  alert('Hello World!')
+}
+
+</script>
+
+<p>
+<button type="button" onclick="testFunc()">
+  <img src="img_girl.jpg" alt="Girl in a jacket" width="50" height="60">
+</button>
+
+
+</body>
+</html>

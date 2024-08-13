@@ -1,0 +1,126 @@
+<!--
+CSS는 엄연히 Cascading Style Sheet로 웹사이트의 표현 방법을 정해주는 스타일 시트 언어이다.
+CSS가 생겨난 이유로는 HTML 안에 태그(<h1>, <b>, <i> 등)와 비주얼 요소(span 등) 섞여버리기 시작하여,
+태그 영역과 비주얼 요소의 영역 구분이 점차 힘들어지고 온갖 레이아웃과 디자인 정보가 HTML안에 욱여넣다 보니 기능과 비주얼의 요소를 구분하기 힘들어져서 만들어졌다.
+
+CSS의 기본 문법은 다음과 같다
+CSS Syntax
+h1은 누구에게 적용할 것이냐, 즉 대상을 나타낸다.
+color:blue, font-size:12px는 대상에게 어떤 값을 사용할 것이냐를 나타낸다
+대상이 붙어있는 Json이라고 생각하면 조금 편할 것 같다.
+
+CSS 적용 방법은 5가지가 있다.
+1. element Selector
+특정 태그 (예. <p>)에게 모두 적용시키는 방법이 있다.
+
+2. id Selector
+#으로 매핑한 대상에게 적용시키는 방법이 있다.
+
+3. class Selector
+id와 유사하게 #이 아닌 .을 사용하여 적용시키는 방법이 있다.
+
+4. *
+모든 태그를 통일 시킨다.
+
+5. grouping Selector
+공통된 속성에 태그들을 각자 개별로 사용하는 것이 아닌 하나로 묶어서 처리하여 사용하는 방식이다.
+
+ -->
+
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset = "UTF-8">
+  <title>Title of the document</title>
+  <style>
+  p {
+    text-align : center;
+    color : red;
+  }
+
+  #para1 {
+  text-align: center;
+  color: blue;
+  }
+
+  .center {
+  text-align: right;
+  color: green;
+  }
+
+  table, th, td {
+    border: 1px solid black;
+  }
+  </style>
+</head>
+
+<body>
+
+<h1>컴투스</h1> 공동 창업자 <b>이영일</b> 대표가 설립한 <i>해긴</i>은 <u>‘홈런 클래시’</u>, ‘오버독스’, <strong>‘익스트림 골프’</strong>, ‘플레이투게더’ 등 <br>캐주얼한 매력을 극대화한 다양한 장르의 모바일게임을 개발 및 서비스하는 기업이다.
+
+<p>
+이미지
+<img src="img_girl.jpg" alt="Girl in a jacket" width="50" height="60">
+</p>
+
+
+<p>
+이미지 + 웹사이트 새 창 이동
+<a href = "https://www.naver.com" target = "_blank">
+  <img src="img_girl.jpg" alt="Girl in a jacket" width="50" height="60">
+</a>
+</p>
+
+<h1>당신이 가장 좋아하는 언어는?</h1>
+<ol>
+  <li>C++</li>
+  <li>C#</li>
+  <li>Java</li>
+  <li>Python</li>
+</ol>
+
+<p>당신이 가장 좋아하는 게임 장르는?</p>
+<ul>
+  <li>MMO</li>
+  <li>FPS</li>
+  <li>RTS</li>
+</ul>
+
+<table>
+  <tr>
+    <th>Month</th>
+    <th>Savings</th>
+  </tr>
+  <tr>
+    <td>January</td>
+    <td>$100</td>
+  </tr>
+</table>
+
+<p>
+<button type="button" onclick="testFunc()">Click Me!</button>
+<script>
+function testFunc()
+{
+  alert('Hello World!')
+}
+</script>
+</p>
+
+<p>
+<button type="button" onclick="testFunc()">
+  <img src="img_girl.jpg" alt="Girl in a jacket" width="50" height="60">
+</button>
+</p>
+
+<p>
+<span style="color:blue;font-weight:bold">blue</span>
+</p>
+
+<p id = "para1"> CSS ID 테스트! </p>
+
+<p class = "center"> CSS Class 테스트! </p>
+
+</body>
+</html>

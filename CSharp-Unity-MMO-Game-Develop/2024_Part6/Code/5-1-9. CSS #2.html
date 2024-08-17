@@ -1,0 +1,110 @@
+<!--
+CSS Box Model
+
+블록 엘리먼트 - 화면 전체를 무조건 기본적으로 사용하려고 한다.
+인라인 엘레먼트 - 자기만의 작은 영역을 기본적으로 사용하려고 한다.
+
+ -->
+
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta charset = "UTF-8">
+  <title>Title of the document</title>
+  <style>
+  p {
+    text-align : center;
+    color : red;
+  }
+
+  #para1 {
+  text-align: center;
+  color: blue;
+  }
+
+  .center {
+  text-align: right;
+  color: green;
+  }
+
+  table, th, td {
+    border: 1px solid black;
+  }
+
+  h1 {
+    border-bottom : 1px solid red;
+    padding-bottom : 5px
+  }
+  </style>
+</head>
+
+<body>
+
+<h1>컴투스</h1> 공동 창업자 <b>이영일</b> 대표가 설립한 <i>해긴</i>은 <u>‘홈런 클래시’</u>, ‘오버독스’, <strong>‘익스트림 골프’</strong>, ‘플레이투게더’ 등 <br>캐주얼한 매력을 극대화한 다양한 장르의 모바일게임을 개발 및 서비스하는 기업이다.
+
+<p>
+이미지
+<img src="img_girl.jpg" alt="Girl in a jacket" width="50" height="60">
+</p>
+
+
+<p>
+이미지 + 웹사이트 새 창 이동
+<a href = "https://www.naver.com" target = "_blank">
+  <img src="img_girl.jpg" alt="Girl in a jacket" width="50" height="60">
+</a>
+</p>
+
+<h1>당신이 가장 좋아하는 언어는?</h1>
+<ol>
+  <li>C++</li>
+  <li>C#</li>
+  <li>Java</li>
+  <li>Python</li>
+</ol>
+
+<p>당신이 가장 좋아하는 게임 장르는?</p>
+<ul>
+  <li>MMO</li>
+  <li>FPS</li>
+  <li>RTS</li>
+</ul>
+
+<table>
+  <tr>
+    <th>Month</th>
+    <th>Savings</th>
+  </tr>
+  <tr>
+    <td>January</td>
+    <td>$100</td>
+  </tr>
+</table>
+
+<p>
+<button type="button" onclick="testFunc()">Click Me!</button>
+<script>
+function testFunc()
+{
+  alert('Hello World!')
+}
+</script>
+</p>
+
+<p>
+<button type="button" onclick="testFunc()">
+  <img src="img_girl.jpg" alt="Girl in a jacket" width="50" height="60">
+</button>
+</p>
+
+<p>
+<span style="color:blue;font-weight:bold">blue</span>
+</p>
+
+<p id = "para1"> CSS ID 테스트! </p>
+
+<p class = "center"> CSS Class 테스트! </p>
+
+</body>
+</html>

@@ -9,3 +9,4 @@
 240813 웹 기초 (HTML, CSS) - CSS #1 수강.
 240817 웹 기초 (HTML, CSS) - CSS #2 수강.
 240817 고급 C# 문법 - Async, Await 수강.
+240820 고급 C# 문법 - LINQ #1 수강.

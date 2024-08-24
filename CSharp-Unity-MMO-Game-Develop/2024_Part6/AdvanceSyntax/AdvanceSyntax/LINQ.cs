@@ -57,7 +57,7 @@ namespace AdvanceSyntax
                     Attack = rand.Next(10, 100)
                 };
 
-                for (int j = 0; j <5; j++)
+                for (int j = 0; j < 5; j++)
                 {
                     player.Items.Add(rand.Next(1, 101));
                 }

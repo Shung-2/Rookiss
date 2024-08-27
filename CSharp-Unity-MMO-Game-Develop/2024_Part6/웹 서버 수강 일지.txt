@@ -14,3 +14,4 @@
 240824 ASP.NET Core 둘러보기 - 환경설정 수강.
 240824 ASP.NET Core 둘러보기 - HelloMVC #1 수강.
 240826 ASP.NET Core 둘러보기 - HelloMVC #2 수강.
+240827 ASP.NET Core 둘러보기 - Hello Razor Pages 수강.

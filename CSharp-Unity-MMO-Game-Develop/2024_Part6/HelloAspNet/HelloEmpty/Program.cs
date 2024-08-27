@@ -1,7 +1,18 @@
+// MVC
+// M (Model) - 데이터 (원자재)
+// V (View) - UI (인테리어)
+// C (Controller) - Controller (액션)
+
+// Razor Pages
+// M
+// V
+// MVVM (Model-View-ViewModel)
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+// builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 
@@ -20,8 +31,9 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
 
 app.Run();

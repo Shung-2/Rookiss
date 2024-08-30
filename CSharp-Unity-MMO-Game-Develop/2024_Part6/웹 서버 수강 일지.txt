@@ -17,3 +17,4 @@
 240827 ASP.NET Core 둘러보기 - Hello Razor Pages 수강.
 240828 ASP.NET Core 둘러보기 - Hello WebAPI 수강.
 240829 ASP.NET Core 둘러보기 - Hello Blazor Server 수강.
+240830 ASP.NET Core 둘러보기 - Hello Blazor Client + SPA 수강.

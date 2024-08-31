@@ -1,0 +1,56 @@
+﻿@* 
+레이저 컴포넌트는 크게 3가지 구분으로 분리할 수 있었다.
+
+1. @page ~ @inject 부분 : 라우팅 경로, 메타데이터, 서비스 주입 등을 나타낸다.
+2. <h1> ~ if-else 부분 : HTML 요소와 C# 코드를 섞어서 사용할 수 있다.
+3. @code { } 부분 : C# 코드를 작성할 수 있다.
+*@
+
+@page "/fetchdata"
+
+<PageTitle>Weather forecast</PageTitle>
+
+@using BlazorApp.Data
+@inject WeatherForecastService ForecastService
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+@if (forecasts == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Temp. (C)</th>
+                <th>Temp. (F)</th>
+                <th>Summary</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var forecast in forecasts)
+            {
+                <tr>
+                    <td>@forecast.Date.ToShortDateString()</td>
+                    <td>@forecast.TemperatureC</td>
+                    <td>@forecast.TemperatureF</td>
+                    <td>@forecast.Summary</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private WeatherForecast[]? forecasts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+    }
+}

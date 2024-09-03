@@ -19,4 +19,5 @@
 240829 ASP.NET Core 둘러보기 - Hello Blazor Server 수강.
 240830 ASP.NET Core 둘러보기 - Hello Blazor Client + SPA 수강.
 240831 Blazor 입문 - BInding 수강.
-240901 Blazor 입문 - BInding 실습 수강.
+240902 Blazor 입문 - BInding 실습 수강.
+240903 Blazor 입문 - BInding 보충 수강.

@@ -21,3 +21,4 @@
 240831 Blazor 입문 - BInding 수강.
 240902 Blazor 입문 - BInding 실습 수강.
 240903 Blazor 입문 - BInding 보충 수강.
+240904 Blazor 입문 - Parameter, Ref, EventCallback 수강.

@@ -6,6 +6,8 @@
 
 <br />
 
+<Counter></Counter>
+
 <ul class="list-group">
 	<!-- 이름 출력 -->
 	@foreach (var user in Users)
@@ -13,13 +15,16 @@
 		<li @key="user" class="list-group-item">
 			<!-- 유저 삭제 -->
 			<button type="button" class="btn btn-link" @onclick="() => KickUser(user)">Kick</button>
-			<label>@user.Name</label>
+			<label style="color:@_color">@user.Name</label>
 		</li>
 	}
 </ul>
 
 @code
 {
+	[CascadingParameter(Name = "ThemeColor")]
+	public string _color { get; set; }
+
 	[Parameter]
 	public List<UserData> Users { get; set; }
 	[Parameter]

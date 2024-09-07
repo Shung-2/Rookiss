@@ -24,3 +24,4 @@
 240904 Blazor 입문 - Parameter, Ref, EventCallback 수강.
 240906 Blazor 입문 - Cascading Parameter 수강.
 240906 Blazor 입문 - Templated Component 수강.
+240907 Blazor 입문 - Dependency Injection 수강.

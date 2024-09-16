@@ -8,15 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSingleton<WeatherForecastService>();
-// Dependency Injection
-builder.Services.AddSingleton<IFoodService, FastFoodService>();
-// 생성자에서 알아서 연결해준다.
-builder.Services.AddSingleton<PaymentService>();
 
-// 3가지 모드
-builder.Services.AddSingleton<SingletonService>();
-builder.Services.AddTransient<TransientService>();
-builder.Services.AddScoped<ScopedService>();
+// Counter 서비스 추가
+builder.Services.AddScoped<CounterState>();
 
 var app = builder.Build();
 

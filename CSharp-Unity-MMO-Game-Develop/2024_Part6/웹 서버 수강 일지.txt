@@ -28,3 +28,4 @@
 240909 Blazor 입문 - SPA 구조, Router 수강.
 240915 Blazor 입문 - Form, Validation 수강.
 240916 Blazor 입문 - State 관리 수강.
+240916 Blazor 입문 - Javascript 연동 수강.

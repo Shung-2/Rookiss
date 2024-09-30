@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using RankingApp.Areas.Identity;
 using RankingApp.Data;
+using RankingApp.Data.Services;
 
 namespace RankingApp
 {
@@ -25,7 +26,9 @@ namespace RankingApp
 			builder.Services.AddRazorPages();
 			builder.Services.AddServerSideBlazor();
 			builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
-			builder.Services.AddSingleton<WeatherForecastService>();
+
+			// RankingService 사용을 위한 등록
+			builder.Services.AddScoped<RankingService>();
 
 			var app = builder.Build();
 

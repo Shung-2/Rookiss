@@ -30,3 +30,4 @@
 240916 Blazor 입문 - State 관리 수강.
 240916 Blazor 입문 - Javascript 연동 수강.
 240929 Blazor 미니 프로젝트, Blazor RankingApp #1 수강.
+240930 Blazor 미니 프로젝트, Blazor RankingApp #2 수강.

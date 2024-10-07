@@ -31,4 +31,4 @@
 240916 Blazor 입문 - Javascript 연동 수강.
 240929 Blazor 미니 프로젝트, Blazor RankingApp #1 수강.
 240930 Blazor 미니 프로젝트, Blazor RankingApp #2 수강.
-테스트 커밋123
+241007 Blazor 미니 프로젝트, Blazor RankingApp #3 수강.

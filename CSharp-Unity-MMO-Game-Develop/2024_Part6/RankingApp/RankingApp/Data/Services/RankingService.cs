@@ -33,7 +33,44 @@ namespace RankingApp.Data.Services
 		}
 
         // UPDATE
+        public Task<bool> UpdateGameResult(GameResult gameResult)
+        {
+            var findResult = _context.GameResults
+                .Where(x => x.Id == gameResult.Id)
+                .FirstOrDefault();
+
+            if (findResult == null)
+            {
+                return Task.FromResult(false);
+            }
+
+            findResult.UserName = gameResult.UserName;
+            findResult.Score = gameResult.Score;
+            // DB 동기화
+            _context.SaveChanges();
+
+            // 성공 반환
+            return Task.FromResult(true);
+        }
 
         // DELETE
+        public Task<bool> DeleteGameResult(GameResult gameResult)
+        {
+            var findResult = _context.GameResults
+                .Where(x => x.Id == gameResult.Id)
+                .FirstOrDefault();
+
+            if (findResult == null)
+            {
+                return Task.FromResult(false);
+            }
+
+            _context.GameResults.Remove(gameResult);
+            // DB 동기화
+            _context.SaveChanges();
+
+            // 성공 반환
+            return Task.FromResult(true);
+        }
     }
 }

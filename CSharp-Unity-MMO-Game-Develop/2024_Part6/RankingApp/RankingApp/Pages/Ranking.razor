@@ -21,6 +21,8 @@
                         <th>UsersName</th>
                         <th>Score</th>
                         <th>Date</th>
+                        <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,6 +32,12 @@
                             <td>@gameResult.UserName</td>
                             <td>@gameResult.Score</td>
                             <td>@gameResult.Date.ToString()</td>
+                            <td>
+                                <button class="btn btn-primary" @onclick=" () => UpdateGameResult(gameResult)">Edit</button>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary" @onclick=" () => DeleteGameResult(gameResult)">Delete</button>
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -97,6 +105,20 @@
         _showPopup = false;
     }
 
+    void UpdateGameResult(GameResult gameResult)
+    {
+        _showPopup = true;
+        _gameResult = gameResult;
+    }
+
+    async Task DeleteGameResult(GameResult gameResult)
+    {
+        var result = RankingService.DeleteGameResult(gameResult);
+
+        // 데이터 갱신
+        _gameResults = await RankingService.GetGameResultsAsync();
+    }
+
     async Task SaveGameResult()
     {
         if (_gameResult.Id == 0)
@@ -106,9 +128,10 @@
 		}
 		else
 		{
-			// RankingService.UpdateGameResult(_gameResult);
+			var result = RankingService.UpdateGameResult(_gameResult);
 		}
 
+        _showPopup = false;
         // 데이터 갱신
         _gameResults = await RankingService.GetGameResultsAsync();
     }

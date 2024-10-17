@@ -37,3 +37,4 @@
 241013 WebAPI와 REST 서비스, WebApi #2 수강.
 241014 WebAPI와 REST 서비스, WebApi #3 수강.
 241016 WebAPI와 REST 서비스, Blazor와 WebApi 연동 수강.
+241017 WebAPI와 REST 서비스, Unity와 WebApi 연동 수강.

@@ -39,3 +39,4 @@
 241016 WebAPI와 REST 서비스, Blazor와 WebApi 연동 수강.
 241017 WebAPI와 REST 서비스, Unity와 WebApi 연동 수강.
 241020 부록, EF Core 데이터 모델링 수강.
+241021 부록, EF Core 데이터 관계 모델링 수강.
